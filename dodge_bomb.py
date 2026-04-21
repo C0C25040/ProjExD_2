@@ -7,6 +7,19 @@ import random
 WIDTH, HEIGHT = 1100, 650
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
+    """
+    引数：こうかとんRectか爆弾Rect
+    戻り値：タプル(横方向判定結果、縦方向判定結果)
+    画面内ならTure,画面外ならFalse
+    """
+    yoko,tate = True, True
+    if rct.left < 0 or WIDTH < rct.right: #横方向判定
+        yoko = False
+    if rct.top < 0 or HEIGHT < rct.bottom: #縦方向判定
+        tate = False
+    return yoko, tate
+
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -20,7 +33,7 @@ def main():
     bb_rct = bb_img.get_rect()#爆弾のrectを取得
     bb_rct.centerx = random.randint(0, WIDTH)
     bb_rct.centery = random.randint(0, HEIGHT)#爆弾の初期座標をランダムに設定
-    # bb_img.set_colorkey((0, 0, 0))#爆弾の初期座標設定
+    bb_img.set_colorkey((0, 0, 0))#爆弾の初期座標設定
     vx, vy = +5, +5
     clock = pg.time.Clock()
     tmr = 0
@@ -51,9 +64,16 @@ def main():
         # if key_lst[pg.K_RIGHT]:
         #     sum_mv[0] += 5
         kk_rct.move_ip(sum_mv)
+        if check_bound(kk_rct) != (True, True):
+            kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
         screen.blit(kk_img, kk_rct)
         bb_rct.move_ip(vx, vy) #爆弾の移動
-        screen.blit(bb_img, bb_rct)
+        yoko, tate = check_bound(bb_rct)
+        if not yoko : #横方向に画面外ならば
+            vx *= -1 #速度の向きを反転させる
+        if not tate : #縦方向に画面外ならば
+            vy *= -1 #速度の向きを反転させる
+        screen.blit(bb_img, bb_rct) #爆弾の表示
         
         pg.display.update()
         tmr += 1
