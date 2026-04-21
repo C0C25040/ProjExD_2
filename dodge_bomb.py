@@ -41,6 +41,10 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT: 
                 return
+            
+        if kk_rct.colliderect(bb_rct): #こうかとんと爆弾が重なったら
+            print("ゲームオーバー")
+            return #ゲームオーバーの意味でmain関数から出る
         screen.blit(bg_img, [0, 0]) 
         DELTA = {
             pg.K_UP: (0, -5),
