@@ -9,7 +9,11 @@ WIDTH, HEIGHT = 1100, 650
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 def gameover(screen: pg.Surface) -> None:
-    """ゲームオーバーを表示する関数"""
+    """
+    ゲームオーバーを表示する関数
+    引数：画面surface
+    戻り値：なし
+    """
     shikaku_img = pg.Surface((WIDTH, HEIGHT))#ゲームオーバー用の四角形surfaceを作成
     pg.draw.rect(shikaku_img, (0, 0, 0), (0, 0, WIDTH, HEIGHT))#四角形を描く
     shikaku_img.set_alpha(200)#四角形の透明度を設定
@@ -29,7 +33,10 @@ def gameover(screen: pg.Surface) -> None:
     time.sleep(5) #5秒待つ
 
 def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
-    """時間とともに爆弾が拡大、加速する"""
+    """
+    時間とともに爆弾が拡大、加速する
+    引数：ない
+    戻り値：爆弾の大きさのリストと加速度のリスト"""
     bb_imgs = []
     bb_accs = []
     for r in range(1, 11):
@@ -42,17 +49,18 @@ def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
 
 def get_kk_imgs() -> dict[tuple[int, int], pg.Surface]:
     kk_imgs = pg.image.load("fig/3.png")
+    kk_imgs_flip = pg.transform.flip(kk_imgs, True, False)
 
     kk_dict = {
         (0, 0): pg.transform.rotozoom(kk_imgs, 0, 0.9),
-        (+5, 0): pg.transform.rotozoom(kk_imgs, 0, 0.9),
-        (+5, -5): pg.transform.rotozoom(kk_imgs, 45, 0.9),
-        (0, -5):pg.transform.rotozoom(kk_imgs, 90, 0.9),
-        (-5, -5):pg.transform.rotozoom(kk_imgs, 135, 0.9),
-        (-5, 0):pg.transform.rotozoom(kk_imgs, 180, 0.9),
-        (-5, +5):pg.transform.rotozoom(kk_imgs, 225, 0.9),
-        (0, +5):pg.transform.rotozoom(kk_imgs, 270, 0.9),
-        (+5, +5):pg.transform.rotozoom(kk_imgs, 315, 0.9),
+        (+5, 0): pg.transform.rotozoom(kk_imgs_flip, 0, 0.9),
+        (+5, -5): pg.transform.rotozoom(kk_imgs_flip, 45, 0.9),
+        (0, -5):pg.transform.rotozoom(kk_imgs_flip, 90, 0.9),
+        (-5, -5):pg.transform.rotozoom(kk_imgs, 315, 0.9),
+        (-5, 0):pg.transform.rotozoom(kk_imgs, 0, 0.9),
+        (-5, +5):pg.transform.rotozoom(kk_imgs, 45, 0.9),
+        (0, +5):pg.transform.rotozoom(kk_imgs_flip, 270, 0.9),
+        (+5, +5):pg.transform.rotozoom(kk_imgs_flip, 315, 0.9),
     }
     return kk_dict
 
@@ -88,7 +96,7 @@ def main():
     tmr = 0
 
     bb_imgs, bb_accs = init_bb_imgs()#爆弾の大きさと加速度のリストを取得
-    kk_dict = get_kk_imgs()#こうかとんの画像の辞書を取得
+    kk_imgs = get_kk_imgs()#こうかとんの画像の辞書を取得
 
     while True:
         for event in pg.event.get():
@@ -114,7 +122,7 @@ def main():
                 sum_mv[0] += mv[0]
                 sum_mv[1] += mv[1]
 
-        kk_img =kk_dict[tuple(sum_mv)]
+        kk_img =kk_imgs[tuple(sum_mv)]
         
         # if key_lst[pg.K_UP]:
         #     sum_mv[1] -= 5
