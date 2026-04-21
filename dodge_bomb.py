@@ -98,7 +98,7 @@ def main():
 
     bb_imgs, bb_accs = init_bb_imgs()#爆弾の大きさと加速度のリストを取得
     kk_imgs = get_kk_imgs()#こうかとんの画像の辞書を取得
-
+    #【Line100 変数名について】
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
