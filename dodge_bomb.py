@@ -40,7 +40,7 @@ def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
     戻り値：爆弾の大きさのリストと加速度のリスト"""
     bb_imgs = []
     bb_accs = []
-    for r in range(1, 11):
+    for r in range(1, 11): #【Line43 画像について】
         bb_img = pg.Surface((20*r, 20*r))#爆弾用の空のsurfaceを作成
         pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)#爆弾円を描く
         bb_imgs.append(bb_img)
