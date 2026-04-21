@@ -40,7 +40,21 @@ def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
         
     return bb_imgs, bb_accs
 
+def get_kk_imgs() -> dict[tuple[int, int], pg.Surface]:
+    kk_imgs = pg.image.load("fig/3.png")
 
+    kk_dict = {
+        (0, 0): pg.transform.rotozoom(kk_imgs, 0, 0.9),
+        (+5, 0): pg.transform.rotozoom(kk_imgs, 0, 0.9),
+        (+5, -5): pg.transform.rotozoom(kk_imgs, 45, 0.9),
+        (0, -5):pg.transform.rotozoom(kk_imgs, 90, 0.9),
+        (-5, -5):pg.transform.rotozoom(kk_imgs, 135, 0.9),
+        (-5, 0):pg.transform.rotozoom(kk_imgs, 180, 0.9),
+        (-5, +5):pg.transform.rotozoom(kk_imgs, 225, 0.9),
+        (0, +5):pg.transform.rotozoom(kk_imgs, 270, 0.9),
+        (+5, +5):pg.transform.rotozoom(kk_imgs, 315, 0.9),
+    }
+    return kk_dict
 
 def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
     """
@@ -74,7 +88,7 @@ def main():
     tmr = 0
 
     bb_imgs, bb_accs = init_bb_imgs()#爆弾の大きさと加速度のリストを取得
-
+    kk_dict = get_kk_imgs()#こうかとんの画像の辞書を取得
 
     while True:
         for event in pg.event.get():
@@ -92,12 +106,15 @@ def main():
             pg.K_LEFT: (-5, 0),
             pg.K_RIGHT: (+5, 0),
         }
+
         key_lst = pg.key.get_pressed()
         sum_mv = [0, 0]
         for key, mv in DELTA.items():
             if key_lst[key]:
                 sum_mv[0] += mv[0]
                 sum_mv[1] += mv[1]
+
+        kk_img =kk_dict[tuple(sum_mv)]
         
         # if key_lst[pg.K_UP]:
         #     sum_mv[1] -= 5
@@ -116,6 +133,7 @@ def main():
             vx *= -1 #速度の向きを反転させる
         if not tate : #縦方向に画面外ならば
             vy *= -1 #速度の向きを反転させる
+
         avx = vx*bb_accs[min(tmr//500, 9)]#爆弾の加速度を設定
         avy = vy*bb_accs[min(tmr//500, 9)]#爆弾の加速度を設定
         bb_img = bb_imgs[min(tmr//500, 9)]#爆弾の大きさを設定
