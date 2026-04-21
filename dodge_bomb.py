@@ -2,10 +2,32 @@ import os
 import sys
 import pygame as pg
 import random
+import time
 
 
 WIDTH, HEIGHT = 1100, 650
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+def gameover(screen: pg.Surface) -> None:
+    """ゲームオーバーを表示する関数"""
+    shikaku_img = pg.Surface((WIDTH, HEIGHT))#ゲームオーバー用の四角形surfaceを作成
+    pg.draw.rect(shikaku_img, (0, 0, 0), (0, 0, WIDTH, HEIGHT))#四角形を描く
+    shikaku_img.set_alpha(200)#四角形の透明度を設定
+    fonto = pg.font.Font(None, 80)
+    txt = fonto.render("GAME OVER", True, (255, 255, 255))#ゲームオーバーの文字を描く
+    txt_rct = txt.get_rect(center=(WIDTH/2, HEIGHT/2))#ゲームオーバーの文字のrectを取得
+
+    gg_img = pg.transform.rotozoom(pg.image.load("fig/8.png"), 0, 0.9)
+    gg_rct = gg_img.get_rect(center=(WIDTH/2, HEIGHT/2))#ゲームオーバーの画像のrectを取得
+
+    shikaku_img.blit(txt, txt_rct)#四角形を画面に貼り付ける
+    shikaku_img.blit(gg_img, (gg_rct.left + 200, gg_rct.top))#ゲームオーバーの画像を画面に貼り付ける
+    shikaku_img.blit(gg_img, (gg_rct.left - 200, gg_rct.top))#ゲームオーバーの画像を画面に貼り付ける
+    screen.blit(shikaku_img, [0, 0])#四角形を画面に貼り付ける
+
+    pg.display.update()
+    time.sleep(5) #5秒待つ
+
 
 def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
     """
@@ -41,9 +63,9 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT: 
                 return
-            
         if kk_rct.colliderect(bb_rct): #こうかとんと爆弾が重なったら
             print("ゲームオーバー")
+            gameover(screen) #ゲームオーバーの関数を呼び出す
             return #ゲームオーバーの意味でmain関数から出る
         screen.blit(bg_img, [0, 0]) 
         DELTA = {
