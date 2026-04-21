@@ -10,10 +10,11 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 def gameover(screen: pg.Surface) -> None:
     """
-    ゲームオーバーを表示する関数
+    ゲームオーバーを表示する関数 
     引数：画面surface
     戻り値：なし
     """
+    #【Line12 定義の付け足し】
     shikaku_img = pg.Surface((WIDTH, HEIGHT))#ゲームオーバー用の四角形surfaceを作成
     pg.draw.rect(shikaku_img, (0, 0, 0), (0, 0, WIDTH, HEIGHT))#四角形を描く
     shikaku_img.set_alpha(200)#四角形の透明度を設定
